@@ -1,0 +1,192 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cost Accounting MCQ Quiz</title>
+  <style>
+    :root{--bg:#f6f9fc;--card:#fff;--accent:#0b63ff}
+    body{font-family:Inter,system-ui,Segoe UI,Arial;margin:0;background:var(--bg);color:#111}
+    .wrap{max-width:920px;margin:28px auto;padding:18px}
+    header{display:flex;align-items:center;gap:12px}
+    h1{margin:0;font-size:20px}
+    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 6px 20px rgba(15,23,42,0.06);}
+    .questions{margin-top:14px}
+    .q{padding:12px;border-radius:8px;margin-bottom:10px;border:1px solid #edf2f7}
+    .opts{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+    .opt{padding:10px;border-radius:8px;border:1px solid #e6eefc;cursor:pointer}
+    .opt.selected{outline:3px solid rgba(11,99,255,0.12)}
+    .opt.correct{background:#ecffef;border-color:#39b54a}
+    .opt.wrong{background:#fff0f0;border-color:#ff6b6b}
+    .controls{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+    button{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:none;cursor:pointer}
+    button[disabled]{opacity:.45;cursor:not-allowed}
+    .pager{display:flex;gap:8px;align-items:center}
+    .page-num{background:#eef2ff;padding:6px 10px;border-radius:8px}
+    .score{font-weight:700}
+    .footer{margin-top:14px;font-size:13px;color:#555}
+    @media (max-width:600px){.wrap{padding:12px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="card" style="padding:10px"><strong>Cost Accounting — MCQ Quiz</strong></div>
+      <div style="flex:1"></div>
+      <div class="card" style="padding:10px">Questions per page: <strong id="perPageLabel">10</strong></div>
+    </header><main class="card" style="margin-top:12px">
+  <div id="quizRoot">
+    <!-- dynamic -->
+  </div>
+</main>
+
+<p class="footer">Questions taken from the uploaded MCQ bank (MCQBank_Paper8.pdf). fileciteturn1file0</p>
+
+  </div><script>
+// Questions array derived from MCQBank_Paper8 (first 30 entries). Each question has 3 options (we intentionally keep first 3 options
+// from the original 4-option questions). correct is 0-based index into options.
+const QUESTIONS = [
+  {q: "Prime Cost is:", options:["All costs incurred in manufacturing a product","The total of direct costs","The material cost of a product","None of the above"], correct:1},
+  {q: "The salaries paid to three drivers who deliver goods are:", options:["A part of prime cost","A direct production expense","A selling & distribution overhead","None of the above"], correct:2},
+  {q: "A company pays Rs.1 per unit royalty to a designer — classification:", options:["Direct expense","Production overhead","Administrative overhead","None of the above"], correct:0},
+  {q: "Method of dealing with overheads by spreading common costs over cost centers on basis of benefit received:", options:["Overhead absorption","Overhead apportionment","Overhead allocation","None of the above"], correct:1},
+  {q: "Which classification is meant for distinction between direct cost and indirect cost?", options:["Function","Element","Variability","None of the above"], correct:1},
+  {q: "Which of the following is applicable for Cost Control?", options:["It is related with the future","It is a corrective function","It ends when the targets are achieved","None of the above"], correct:2},
+  {q: "Anything for which a separate measurement of cost is required is called:", options:["Cost driver","Cost centre","Cost unit","None of the above"], correct:2},
+  {q: "Ticket counter in a Metro Station is an example of:", options:["Profit centre","Investment centre","Cost centre","None of the above"], correct:2},
+  {q: "Which is an example of functional classification of cost?", options:["Direct labour cost","Direct material cost","Factory overhead","None of the above"], correct:2},
+  {q: "Absorption costing is also referred as:", options:["Historical costing","Traditional costing","Full costing","None of the above"], correct:2},
+
+  {q: "Main purpose of cost accounting is:", options:["Maintain profit","To help in inventory valuation","To provide information to management for decision-making","None of the above"], correct:2},
+  {q: "Which is anything for which separate measurement is required?", options:["Cost unit","Cost object","Cost driver","None of the above"], correct:1},
+  {q: "Which of the following is true about Cost Control?", options:["It is a corrective function","It challenges the set standards","It ends when targets achieved","None of the above"], correct:2},
+  {q: "Cost Units used in Power Sector is:", options:["Kilo-meter (K.M.)","Kilo - Watt-Hour (kWh)","Number of Electric Points","None of the above"], correct:1},
+  {q: "Process Costing method is suitable for:", options:["Transport Sector","Chemical Industries","Dam Construction","None of the above"], correct:1},
+  {q: "Distinction between Direct Cost and Indirect Cost is an example of _____ classification:", options:["By element","By Function","By controllability","None of the above"], correct:0},
+  {q: "Advantage of using IT in Cost Accounting does NOT include:", options:["Single point data entry","Stock needs to be reconciled with goods received note","Reduction in multiplicity of documents","None of the above"], correct:1},
+  {q: "Behaviour of conveyance cost when taxi charges minimum Rs.80 + Rs.12/km:", options:["Fixed cost","Semi-variable","Variable","None of the above"], correct:1},
+  {q: "Which cannot be treated as Cost Centre for A Ltd with three production departments and machines:", options:["Machines under the production department","Production Departments","Both Production Department and Machines","None of the above"], correct:2},
+  {q: "Which is an example of functional classification of cost?", options:["Semi-variable costs","Fixed Cost","Administrative overhead","None of the above"], correct:2},
+
+  {q: "Costs ascertained after they have been incurred are known as:", options:["Sunk costs","Imputed Costs","Historical Costs","None of the above"], correct:2},
+  {q: "For cost sheet preparation, costs are classified on basis of:", options:["Functions","Variability","Relevance","None of the above"], correct:0},
+  {q: "Which is NOT excluded while preparing a cost sheet?", options:["Goodwill written off","Provision for taxation","Property tax on factory building","None of the above"], correct:2},
+  {q: "What is prime cost?", options:["Total direct cost only","Total Indirect Costs only","Total Non-Production Costs","None of the above"], correct:0},
+  {q: "Which does NOT form part of prime cost?", options:["Cost of Packing","Cost of transportation paid to bring materials to factory","GST on raw materials (input credit cannot be claimed)","None of the above"], correct:0},
+  {q: "Which is NOT an objective of Cost Accounting?", options:["Ascertainment of Cost","Determination of Selling Price","Assisting Shareholders in decision making","None of the above"], correct:2},
+  {q: "Which are direct expenses? (Special designs, Hire of tools, Salesman's wages, Rent of factory)", options:["(1) and (2)","(1) and (3)","(2) and (3)","None of the above"], correct:0},
+  {q: "Salary paid to plant Supervisor is a part of:", options:["Factory Overheads","Quality Control Cost","Administrative cost","None of the above"], correct:0},
+  {q: "Depreciation of Director's Laptop is treated as part of:", options:["Administration Overheads","Factory Overheads","IT infrastructure Cost","None of the above"], correct:0},
+  {q: "Lab salaries for a testing lab (quality) are part of:", options:["Works Overheads","Quality Control Cost","Direct Expenses","None of the above"], correct:1}
+];
+
+// --- App state ---
+let state = {page:0, perPage:10, selections:{}};
+const root = document.getElementById('quizRoot');
+
+function render(){
+  const start = state.page * state.perPage;
+  const end = Math.min(start + state.perPage, QUESTIONS.length);
+  root.innerHTML = '';
+
+  const container = document.createElement('div');
+  container.className = 'questions';
+
+  for(let i=start;i<end;i++){
+    const item = QUESTIONS[i];
+    const qwrap = document.createElement('div'); qwrap.className='q';
+    const qtitle = document.createElement('div'); qtitle.innerHTML = `<strong>Q${i+1}.</strong> ${item.q}`;
+    qwrap.appendChild(qtitle);
+
+    const opts = document.createElement('div'); opts.className='opts';
+    item.options.forEach((opt, idx)=>{
+      const b = document.createElement('div'); b.className='opt'; b.tabIndex=0; b.innerText = opt;
+      // selection highlight
+      const key = String(i);
+      if(state.selections[key]!==undefined){
+        const sel = state.selections[key];
+        if(sel === idx){ b.classList.add('selected'); }
+        // show correct/wrong styling
+        if(sel !== item.correct){
+          if(idx === item.correct) b.classList.add('correct');
+          if(idx === sel) b.classList.add('wrong');
+        } else {
+          if(idx === item.correct) b.classList.add('correct');
+        }
+      }
+
+      b.addEventListener('click', ()=>{ handleSelect(i, idx); });
+      opts.appendChild(b);
+    });
+
+    qwrap.appendChild(opts);
+    container.appendChild(qwrap);
+  }
+
+  root.appendChild(container);
+
+  // controls
+  const controls = document.createElement('div'); controls.className='controls';
+  const pager = document.createElement('div'); pager.className='pager';
+  const prev = document.createElement('button'); prev.innerText='Previous'; prev.disabled = state.page===0;
+  prev.onclick = ()=>{ state.page = Math.max(0, state.page-1); render(); };
+  const next = document.createElement('button'); next.innerText='Next'; next.disabled = end>=QUESTIONS.length;
+  next.onclick = ()=>{ state.page++; render(); };
+  const pageNum = document.createElement('div'); pageNum.className='page-num'; pageNum.innerText = `Page ${state.page+1} of ${Math.ceil(QUESTIONS.length/state.perPage)}`;
+  pager.appendChild(prev); pager.appendChild(pageNum); pager.appendChild(next);
+
+  const right = document.createElement('div');
+  const submit = document.createElement('button'); submit.innerText='Submit Page';
+  submit.onclick = showPageScore;
+  right.appendChild(submit);
+
+  controls.appendChild(pager);
+  controls.appendChild(right);
+  root.appendChild(controls);
+
+  // overall status
+  const answered = Object.keys(state.selections).length;
+  const status = document.createElement('div'); status.style.marginTop='10px'; status.innerHTML = `<span class="score">Answered:</span> ${answered} / ${QUESTIONS.length}`;
+  root.appendChild(status);
+}
+
+function handleSelect(qIndex, optIndex){
+  // allow one selection per question; on select, show correct answer (styling applied)
+  state.selections[String(qIndex)] = optIndex;
+  // re-render to apply correct/wrong styles
+  render();
+  // after choosing, if wrong, show a small toast with correct
+  const correctIdx = QUESTIONS[qIndex].correct;
+  if(optIndex !== correctIdx){
+    showInlineMessage(qIndex, `Wrong — correct answer: ${QUESTIONS[qIndex].options[correctIdx]}`);
+  } else {
+    showInlineMessage(qIndex, `Correct!`);
+  }
+}
+
+function showInlineMessage(qIndex, text){
+  // small ephemeral message under that question
+  const qEls = document.querySelectorAll('.q');
+  const rel = qEls[qIndex - state.page*state.perPage];
+  if(!rel) return;
+  let msg = rel.querySelector('.inline-msg');
+  if(!msg){ msg = document.createElement('div'); msg.className='inline-msg'; msg.style.marginTop='8px'; msg.style.fontSize='13px'; rel.appendChild(msg);} 
+  msg.innerText = text;
+  setTimeout(()=>{ if(msg) msg.style.opacity = '0.6'; }, 2000);
+}
+
+function showPageScore(){
+  const start = state.page * state.perPage; const end = Math.min(start + state.perPage, QUESTIONS.length);
+  let correct=0, total= end-start;
+  for(let i=start;i<end;i++){
+    const sel = state.selections[String(i)];
+    if(sel !== undefined && sel === QUESTIONS[i].correct) correct++;
+  }
+  alert(`This page score: ${correct} / ${total}\n(You can navigate pages to continue)`);
+}
+
+// initial render
+render();
+</script></body>
+</html>
